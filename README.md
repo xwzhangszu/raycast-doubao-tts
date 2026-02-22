@@ -1,7 +1,7 @@
 # Doubao TTS — Raycast Extension
 
 <p align="center">
-  <img src="assets/icon.png" width="128" height="128" alt="Doubao TTS Icon" />
+  <img src="assets/command-icon.png" width="128" height="128" alt="Doubao TTS Icon" />
 </p>
 
 <p align="center">
@@ -37,9 +37,9 @@
 
 ## Screenshots | 截图
 
-| Preferences 偏好设置 | Hotkey Binding 快捷键绑定 | Quick Read 快速朗读 |
+| Command List 命令列表 | Preferences 偏好设置 | Extension Management 扩展管理 |
 |:---:|:---:|:---:|
-| ![Preferences](media/1.png) | ![Hotkey](media/2.png) | ![Quick Read](media/3.png) |
+| ![Command List](media/command-list.png) | ![Preferences](media/preferences.png) | ![Extension Management](media/extension-management.png) |
 
 ## Installation | 安装
 
@@ -161,7 +161,7 @@ raycast-doubao-tts/
 │   ├── read-with-voice.tsx     # Voice selection command
 │   └── stop-reading.tsx        # Stop playback command
 ├── assets/
-│   └── icon.png                # Extension icon
+│   └── command-icon.png        # Extension icon
 ├── package.json
 └── tsconfig.json
 ```
