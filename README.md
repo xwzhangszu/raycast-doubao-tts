@@ -37,9 +37,9 @@
 
 ## Screenshots | 截图
 
-| Quick Read 快速朗读 | Hotkey Binding 快捷键绑定 | Preferences 偏好设置 |
+| Preferences 偏好设置 | Hotkey Binding 快捷键绑定 | Quick Read 快速朗读 |
 |:---:|:---:|:---:|
-| ![Quick Read](media/1.png) | ![Hotkey](media/2.png) | ![Preferences](media/3.png) |
+| ![Preferences](media/1.png) | ![Hotkey](media/2.png) | ![Quick Read](media/3.png) |
 
 ## Installation | 安装
 
