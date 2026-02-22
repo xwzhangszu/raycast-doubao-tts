@@ -41,7 +41,7 @@
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/xianweizhang/raycast-doubao-tts.git
+git clone https://github.com/xwzhangSZU/raycast-doubao-tts.git
 cd raycast-doubao-tts
 
 # 2. 安装依赖
