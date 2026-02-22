@@ -1,7 +1,7 @@
 import { getPreferenceValues } from "@raycast/api";
 import { randomUUID } from "crypto";
 import { getVoiceById } from "../constants/voices";
-import type { TTSV3Request, TTSV3ResponseChunk, TTSOptions, Preferences } from "./types";
+import type { TTSV3Request, TTSV3ResponseChunk, TTSOptions } from "./types";
 
 const API_URL = "https://openspeech.bytedance.com/api/v3/tts/unidirectional";
 const AUDIO_CHUNK_CODE = 0;
@@ -96,7 +96,7 @@ async function parseStreamResponse(response: Response, speaker: string): Promise
     throw new TTSApiError("Empty response body", -3);
   }
 
-  const audioBuffers: Buffer[] = [];
+  const audioBuffers: Uint8Array[] = [];
   const lines = text.split("\n");
 
   for (const line of lines) {
@@ -110,7 +110,7 @@ async function parseStreamResponse(response: Response, speaker: string): Promise
   return Buffer.concat(audioBuffers).toString("base64");
 }
 
-function processLine(line: string, speaker: string, audioBuffers: Buffer[]): void {
+function processLine(line: string, speaker: string, audioBuffers: Uint8Array[]): void {
   if (!line) return;
 
   const chunk = parseChunk(line, speaker);
@@ -120,7 +120,7 @@ function processLine(line: string, speaker: string, audioBuffers: Buffer[]): voi
     if (chunk.data) {
       const decoded = Buffer.from(chunk.data, "base64");
       if (decoded.length > 0) {
-        audioBuffers.push(decoded);
+        audioBuffers.push(new Uint8Array(decoded));
       }
     }
     // data is null/empty → sentence metadata, skip silently
