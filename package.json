@@ -3,7 +3,7 @@
   "name": "doubao-tts",
   "title": "Doubao TTS",
   "description": "Read selected text aloud using Volcengine Doubao TTS with 90+ Chinese and English voices",
-  "icon": "icon.png",
+  "icon": "command-icon.png",
   "author": "xianwei_zhang",
   "categories": [
     "Media"
