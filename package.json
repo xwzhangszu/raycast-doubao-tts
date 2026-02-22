@@ -1,0 +1,118 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "doubao-tts",
+  "title": "Doubao TTS",
+  "description": "Read selected text aloud using Volcengine Doubao TTS voices",
+  "icon": "icon.png",
+  "author": "xianweizhang",
+  "categories": ["Productivity"],
+  "license": "MIT",
+  "version": "1.0.0",
+  "commands": [
+    {
+      "name": "quick-read",
+      "title": "Quick Read Selected Text",
+      "description": "Read selected text with default voice",
+      "mode": "no-view"
+    },
+    {
+      "name": "read-with-voice",
+      "title": "Read with Voice Selection",
+      "description": "Select a voice and read selected text aloud",
+      "mode": "view"
+    },
+    {
+      "name": "stop-reading",
+      "title": "Stop Reading",
+      "description": "Stop the current TTS playback",
+      "mode": "no-view"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "appId",
+      "type": "textfield",
+      "required": true,
+      "title": "App ID",
+      "description": "Volcengine TTS App ID (X-Api-App-Id)",
+      "placeholder": "Enter your App ID"
+    },
+    {
+      "name": "accessKey",
+      "type": "password",
+      "required": true,
+      "title": "Access Key",
+      "description": "Volcengine TTS Access Key (X-Api-Access-Key)",
+      "placeholder": "Enter your access key"
+    },
+    {
+      "name": "resourceId",
+      "type": "dropdown",
+      "required": false,
+      "title": "模型版本",
+      "description": "选择语音合成模型版本，不同版本支持不同音色",
+      "default": "seed-tts-2.0",
+      "data": [
+        { "title": "豆包语音合成 2.0（推荐）", "value": "seed-tts-2.0" },
+        { "title": "豆包语音合成 1.0", "value": "seed-tts-1.0" },
+        { "title": "豆包语音合成 1.0（并发版）", "value": "seed-tts-1.0-concurr" },
+        { "title": "声音复刻 2.0", "value": "seed-icl-2.0" },
+        { "title": "声音复刻 1.0", "value": "seed-icl-1.0" }
+      ]
+    },
+    {
+      "name": "defaultVoice",
+      "type": "dropdown",
+      "required": false,
+      "title": "Default Voice",
+      "description": "Voice used for Quick Read command",
+      "default": "zh_female_vv_uranus_bigtts",
+      "data": [
+        { "title": "Vivi 2.0", "value": "zh_female_vv_uranus_bigtts" },
+        { "title": "小何 2.0", "value": "zh_female_xiaohe_uranus_bigtts" },
+        { "title": "云舟 2.0", "value": "zh_male_m191_uranus_bigtts" },
+        { "title": "小天 2.0", "value": "zh_male_taocheng_uranus_bigtts" },
+        { "title": "灿灿 (1.0)", "value": "zh_female_cancan_mars_bigtts" },
+        { "title": "擎苍 (1.0)", "value": "zh_male_qingcang_mars_bigtts" },
+        { "title": "亲切女声 (1.0)", "value": "zh_female_qinqienvsheng_moon_bigtts" },
+        { "title": "阳光青年 (1.0)", "value": "zh_male_yangguangqingnian_moon_bigtts" },
+        { "title": "Tim 2.0 (EN)", "value": "en_male_tim_uranus_bigtts" },
+        { "title": "Adam (EN 1.0)", "value": "en_male_adam_mars_bigtts" }
+      ]
+    },
+    {
+      "name": "speechRate",
+      "type": "dropdown",
+      "required": false,
+      "title": "Speech Rate",
+      "description": "Speech rate (-50 to 100, 0=normal, 100=2x speed)",
+      "default": "0",
+      "data": [
+        { "title": "0.5x (-50)", "value": "-50" },
+        { "title": "0.75x (-25)", "value": "-25" },
+        { "title": "1.0x (Normal)", "value": "0" },
+        { "title": "1.25x (25)", "value": "25" },
+        { "title": "1.5x (50)", "value": "50" },
+        { "title": "2.0x (100)", "value": "100" }
+      ]
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.83.0",
+    "@raycast/utils": "^1.17.0"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^1.0.11",
+    "@types/node": "20.8.10",
+    "@types/react": "18.3.3",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "build": "ray build --skip-types -e dist -o dist",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint"
+  }
+}
