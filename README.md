@@ -50,19 +50,10 @@
 
 ### Steps | 安装步骤
 
-```bash
-# 1. Clone the repo | 克隆仓库
-git clone https://github.com/xwzhangSZU/raycast-doubao-tts.git
-cd raycast-doubao-tts
-
-# 2. Install dependencies | 安装依赖
-npm install
-
-# 3. Start dev mode (auto-loads into Raycast) | 启动开发模式
-npm run dev
-```
-
-Search "Doubao" in Raycast to find the commands. | 在 Raycast 中搜索 "Doubao" 即可看到命令。
+1. Search **"Doubao TTS"** in the [Raycast Store](https://www.raycast.com/store), install the extension | 在 Raycast 应用商店中搜索 **"Doubao TTS"**，下载安装
+2. Configure your **App ID** and **Access Key** on first launch ([guide below](#get-app-id--access-key--获取-app-id-和-access-key)) | 首次启动时配置 App ID 和 Access Key
+3. Bind a hotkey to **Quick Read Selected Text** ([how?](#bind-a-hotkey-highly-recommended--绑定快捷键强烈推荐)) | 为 Quick Read 绑定快捷键
+4. Select any text, press the hotkey — done! | 选中文字，按下快捷键，即刻朗读！
 
 ## Configuration | 配置
 
