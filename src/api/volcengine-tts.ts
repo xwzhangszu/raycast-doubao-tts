@@ -1,7 +1,7 @@
 import { getPreferenceValues } from "@raycast/api";
 import { randomUUID } from "crypto";
 import { getVoiceById } from "../constants/voices";
-import type { TTSV3Request, TTSV3ResponseChunk, TTSOptions, Preferences } from "./types";
+import type { TTSV3Request, TTSV3ResponseChunk, TTSOptions } from "./types";
 
 const API_URL = "https://openspeech.bytedance.com/api/v3/tts/unidirectional";
 const AUDIO_CHUNK_CODE = 0;
@@ -96,7 +96,7 @@ async function parseStreamResponse(response: Response, speaker: string): Promise
     throw new TTSApiError("Empty response body", -3);
   }
 
-  const audioBuffers: Buffer[] = [];
+  const audioBuffers: Uint8Array[] = [];
   const lines = text.split("\n");
 
   for (const line of lines) {
@@ -110,7 +110,7 @@ async function parseStreamResponse(response: Response, speaker: string): Promise
   return Buffer.concat(audioBuffers).toString("base64");
 }
 
-function processLine(line: string, speaker: string, audioBuffers: Buffer[]): void {
+function processLine(line: string, speaker: string, audioBuffers: Uint8Array[]): void {
   if (!line) return;
 
   const chunk = parseChunk(line, speaker);
@@ -120,7 +120,7 @@ function processLine(line: string, speaker: string, audioBuffers: Buffer[]): voi
     if (chunk.data) {
       const decoded = Buffer.from(chunk.data, "base64");
       if (decoded.length > 0) {
-        audioBuffers.push(decoded);
+        audioBuffers.push(new Uint8Array(decoded));
       }
     }
     // data is null/empty → sentence metadata, skip silently
@@ -171,7 +171,7 @@ export function buildOptionsFromPrefs(speakerOverride?: string): TTSOptions {
   const voiceConfig = getVoiceById(speaker);
   if (voiceConfig && voiceConfig.model !== baseModel) {
     throw new TTSApiError(
-      `音色「${voiceConfig.name}」需要 ${voiceConfig.model}，但当前模型为 ${currentModel}。请在偏好设置中更换默认音色或模型版本。`,
+      `Voice "${voiceConfig.name}" requires ${voiceConfig.model}, but the current model is ${currentModel}. Please change the default voice or model version in preferences.`,
       -1,
     );
   }
