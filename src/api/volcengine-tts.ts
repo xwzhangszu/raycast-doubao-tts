@@ -98,14 +98,49 @@ function buildAuthHeaders(prefs: Preferences, resourceId: string): TTSAuthHeader
 /**
  * Parse the V3 response (JSON lines) and accumulate audio data.
  *
- * Reads the full response text, splits by newlines, decodes each base64
- * audio chunk to binary, concatenates, then re-encodes to base64.
- *
- * Note: Uses response.text() instead of streaming reader for broad
- * Node.js runtime compatibility (Raycast, etc.).
+ * Reads the HTTP response body incrementally, splits completed JSON lines,
+ * decodes each base64 audio chunk to binary, concatenates, then re-encodes to base64.
  */
 async function parseStreamResponse(response: Response, speaker: string): Promise<string> {
-  const text = await response.text();
+  if (!response.body) {
+    return parseResponseText(await response.text(), speaker);
+  }
+
+  const audioBuffers: Uint8Array[] = [];
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let pending = "";
+  let reading = true;
+
+  try {
+    while (reading) {
+      const { done, value } = await reader.read();
+      if (done) {
+        reading = false;
+        continue;
+      }
+
+      pending += decoder.decode(value, { stream: true });
+      const lines = pending.split("\n");
+      pending = lines.pop() ?? "";
+
+      for (const line of lines) {
+        processLine(line.trim(), speaker, audioBuffers);
+      }
+    }
+
+    pending += decoder.decode();
+    if (pending.trim()) {
+      processLine(pending.trim(), speaker, audioBuffers);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+
+  return encodeAudioBuffers(audioBuffers);
+}
+
+function parseResponseText(text: string, speaker: string): string {
   if (!text.trim()) {
     throw new TTSApiError("Empty response body", -3);
   }
@@ -117,6 +152,10 @@ async function parseStreamResponse(response: Response, speaker: string): Promise
     processLine(line.trim(), speaker, audioBuffers);
   }
 
+  return encodeAudioBuffers(audioBuffers);
+}
+
+function encodeAudioBuffers(audioBuffers: Uint8Array[]): string {
   if (audioBuffers.length === 0) {
     throw new TTSApiError("No audio data received from TTS API", -4);
   }

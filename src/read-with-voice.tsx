@@ -11,10 +11,11 @@ import {
 } from "@raycast/api";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { VOICE_CATEGORIES, getVoicesByCategory } from "./constants/voices";
-import { synthesizeSpeech, buildOptionsFromPrefs, getBaseModel, TTSApiError } from "./api/volcengine-tts";
+import { buildOptionsFromPrefs, getBaseModel, TTSApiError } from "./api/volcengine-tts";
 import { chunkText } from "./utils/text-chunker";
 import { AudioPlayer } from "./utils/audio-player";
 import { setQuickReadVoiceOverride } from "./utils/voice-preferences";
+import { playChunksWithLookahead } from "./utils/pipelined-reading";
 import type { VoiceConfig } from "./api/types";
 
 export default function ReadWithVoice() {
@@ -65,18 +66,12 @@ export default function ReadWithVoice() {
           message: voice.name,
         });
 
-        for (let i = 0; i < chunks.length; i++) {
-          if (player.isStopped()) break;
-          const audio = await synthesizeSpeech(chunks[i], options);
-          if (player.isStopped()) break;
-
-          if (i === 0) {
+        await playChunksWithLookahead(chunks, options, player, {
+          onFirstAudioReady: async () => {
             setIsLoading(false);
             await showToast({ style: Toast.Style.Animated, title: "Playing...", message: voice.name });
-          }
-
-          await player.playAudio(audio);
-        }
+          },
+        });
 
         if (!player.isStopped()) {
           await showToast({ style: Toast.Style.Success, title: "Playback complete" });

@@ -197,6 +197,7 @@ npm run lint   # Lint | 代码检查
 - **Response**: JSON Lines (NDJSON), one JSON object per line
 - **Audio**: MP3, 24000 Hz
 - **Chunking**: Smart split by punctuation, ≤1024 UTF-8 bytes per chunk | 按标点拆分
+- **Playback pipeline**: While one chunk is playing, the next chunk is synthesized in the background | 播放当前分片时预合成下一分片
 - **Playback**: macOS built-in `afplay`
 - **Cross-command stop**: PID file (`$TMPDIR/doubao-tts.pid`)
 
