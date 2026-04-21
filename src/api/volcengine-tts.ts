@@ -10,6 +10,8 @@ const REQUEST_TIMEOUT_MS = 30_000;
 const DEFAULT_AUDIO_FORMAT = "mp3";
 const DEFAULT_SAMPLE_RATE = 24000;
 const DEFAULT_SPEAKER = "zh_female_vv_uranus_bigtts";
+type TTSAuthHeaders = Record<"Content-Type" | "X-Api-Resource-Id", string> &
+  Partial<Record<"X-Api-Key" | "X-Api-App-Id" | "X-Api-Access-Key", string>>;
 
 /**
  * Synthesize speech using the V3 streaming API.
@@ -19,14 +21,8 @@ const DEFAULT_SPEAKER = "zh_female_vv_uranus_bigtts";
  */
 export async function synthesizeSpeech(text: string, options: TTSOptions): Promise<string> {
   const prefs = getPreferenceValues<Preferences>();
-
-  if (!prefs.appId?.trim()) {
-    throw new TTSApiError("App ID is required. Configure it in extension preferences.", -1);
-  }
-  if (!prefs.accessKey?.trim()) {
-    throw new TTSApiError("Access Key is required. Configure it in extension preferences.", -1);
-  }
   const resourceId = prefs.resourceId || "seed-tts-2.0";
+  const headers = buildAuthHeaders(prefs, resourceId);
 
   const trimmedText = text.trim();
   if (!trimmedText) {
@@ -52,12 +48,7 @@ export async function synthesizeSpeech(text: string, options: TTSOptions): Promi
   try {
     const response = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Api-App-Id": prefs.appId,
-        "X-Api-Access-Key": prefs.accessKey,
-        "X-Api-Resource-Id": resourceId,
-      },
+      headers,
       body: JSON.stringify(requestBody),
       signal: controller.signal,
     });
@@ -65,7 +56,7 @@ export async function synthesizeSpeech(text: string, options: TTSOptions): Promi
     if (!response.ok) {
       const detail =
         response.status === 401
-          ? "Authentication failed. Please check App ID and Access Key in preferences."
+          ? "Authentication failed. Please check API Key or legacy App ID/Access Key in preferences."
           : `${response.statusText} (speaker: ${options.speaker})`;
       throw new TTSApiError(`HTTP ${response.status}: ${detail}`, response.status);
     }
@@ -79,6 +70,29 @@ export async function synthesizeSpeech(text: string, options: TTSOptions): Promi
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+function buildAuthHeaders(prefs: Preferences, resourceId: string): TTSAuthHeaders {
+  const apiKey = prefs.apiKey?.trim();
+  const appId = prefs.appId?.trim();
+  const accessKey = prefs.accessKey?.trim();
+  const headers: TTSAuthHeaders = {
+    "Content-Type": "application/json",
+    "X-Api-Resource-Id": resourceId,
+  };
+
+  if (apiKey) {
+    return { ...headers, "X-Api-Key": apiKey };
+  }
+
+  if (appId && accessKey) {
+    return { ...headers, "X-Api-App-Id": appId, "X-Api-Access-Key": accessKey };
+  }
+
+  throw new TTSApiError(
+    "API Key is required. Configure API Key, or provide legacy App ID and Access Key in extension preferences.",
+    -1,
+  );
 }
 
 /**

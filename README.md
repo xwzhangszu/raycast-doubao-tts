@@ -52,31 +52,35 @@
 ### Steps | 安装步骤
 
 1. Search **"Doubao TTS"** in the [Raycast Store](https://www.raycast.com/store), install the extension | 在 Raycast 应用商店中搜索 **"Doubao TTS"**，下载安装
-2. Configure your **App ID** and **Access Key** on first launch ([guide below](#get-app-id--access-key--获取-app-id-和-access-key)) | 首次启动时配置 App ID 和 Access Key
+2. Configure your **API Key** on first launch, or use legacy **App ID** + **Access Key** ([guide below](#get-api-key-or-legacy-credentials--获取-api-key-或旧版凭证)) | 首次启动时配置 API Key，或继续使用旧版 App ID + Access Key
 3. Bind a hotkey to **Quick Read Selected Text** ([how?](#bind-a-hotkey-highly-recommended--绑定快捷键强烈推荐)) | 为 Quick Read 绑定快捷键
 4. Select any text, press the hotkey — done! | 选中文字，按下快捷键，即刻朗读！
 
 ## Configuration | 配置
 
-Raycast will prompt for preferences on first use. | 首次使用时，Raycast 会自动弹出偏好设置页面。
+Open the extension preferences before first use and configure one authentication method. | 首次使用前打开扩展偏好设置，并配置一种鉴权方式。
 
 | Setting 配置项 | Description 说明 | Required 必填 |
 |--------|------|:----:|
-| **App ID** | Volcengine app identifier 火山引擎应用标识 | ✅ |
-| **Access Key** | Volcengine access key 火山引擎访问密钥 | ✅ |
+| **API Key** | New Volcengine Doubao Speech API Key; preferred 新版 API Key，优先使用 | recommended |
+| App ID | Legacy Volcengine app identifier; fallback only 旧版应用标识，仅作兼容回退 | |
+| Access Key | Legacy Volcengine access key; fallback only 旧版访问密钥，仅作兼容回退 | |
 | Model Version | TTS model (default: 2.0) 语音合成模型 | |
 | Default Voice | Voice for Quick Read 默认音色 | |
 | Speech Rate | Playback speed (0.5x–2.0x) 语速 | |
 
-### Get App ID & Access Key | 获取 App ID 和 Access Key
+Fill **API Key** if you use the new Volcengine console. If API Key is empty, the extension falls back to legacy **App ID** + **Access Key**. | 使用新版控制台时只填 API Key；如果 API Key 为空，扩展会自动回退到旧版 App ID + Access Key。
+
+### Get API Key or Legacy Credentials | 获取 API Key 或旧版凭证
 
 1. Sign up and log in to [Volcengine Console](https://console.volcengine.com/) | 注册并登录火山引擎控制台
 2. Go to [Speech → Doubao TTS](https://console.volcengine.com/speech/service/10007) | 进入语音技术 → 豆包语音合成
 3. Enable the service if not already active | 如尚未开通，点击「开通服务」
-4. Find your credentials | 在控制台页面获取：
+4. For the new console, create or copy an **API Key** and paste it into the `API Key` preference | 新版控制台创建或复制 API Key，并填入扩展的 `API Key`
+5. For legacy console credentials, leave `API Key` empty and fill | 如果继续使用旧版控制台凭证，请留空 `API Key` 并填写：
    - **App ID** = `X-Api-App-Id`
    - **Access Key** (Access Token) = `X-Api-Access-Key`
-5. See also: [Console FAQ](https://www.volcengine.com/docs/6561/196768) | [控制台使用 FAQ](https://www.volcengine.com/docs/6561/196768)
+6. See also: [Quick Start (New Console)](https://www.volcengine.com/docs/6561/2119699), [API Key Usage](https://www.volcengine.com/docs/6561/1816214), and [Console FAQ](https://www.volcengine.com/docs/6561/196768) | 也可参考新版控制台快速入门、API Key 使用说明和控制台 FAQ
 
 > **Tip**: New Volcengine users get a free quota. Check the console for details. | 火山引擎新用户有免费额度，具体以控制台显示为准。
 
@@ -189,7 +193,7 @@ npm run lint   # Lint | 代码检查
 ### Technical Details | 技术细节
 
 - **API**: Volcengine Doubao TTS V3 HTTP unidirectional streaming | 火山引擎豆包 TTS V3 HTTP 流式接口
-- **Auth**: HTTP Headers (`X-Api-App-Id`, `X-Api-Access-Key`, `X-Api-Resource-Id`)
+- **Auth**: HTTP Headers (`X-Api-Key`, `X-Api-Resource-Id`) with legacy fallback (`X-Api-App-Id`, `X-Api-Access-Key`)
 - **Response**: JSON Lines (NDJSON), one JSON object per line
 - **Audio**: MP3, 24000 Hz
 - **Chunking**: Smart split by punctuation, ≤1024 UTF-8 bytes per chunk | 按标点拆分
