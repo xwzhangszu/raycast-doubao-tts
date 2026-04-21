@@ -5,214 +5,106 @@
 </p>
 
 <p align="center">
-  Select any text on macOS, read it aloud via <a href="https://www.raycast.com/">Raycast</a> — powered by <a href="https://www.volcengine.com/docs/6561/1598757">Volcengine Doubao TTS V3</a>.<br/>
-  在 macOS 上选中任意文字，通过 <a href="https://www.raycast.com/">Raycast</a> 一键朗读 — 基于<a href="https://www.volcengine.com/docs/6561/1598757">火山引擎豆包语音合成大模型 V3</a>。
+  Select any text on macOS and read it aloud with <a href="https://www.raycast.com/">Raycast</a>, powered by <a href="https://www.volcengine.com/docs/6561/1598757">Volcengine Doubao TTS V3</a>.
 </p>
 
 ---
 
-## Why Doubao TTS? | 为什么选择豆包 TTS？
+## Why Doubao TTS?
 
-**Doubao TTS is the leading Chinese AI speech synthesis engine.** It delivers unmatched naturalness, emotional expression, and voice diversity for Chinese text. Whether you're listening to research papers, long articles, or everyday text, Doubao TTS provides near-human-quality speech — no extra apps required.
+Doubao TTS is a high-quality Chinese AI speech synthesis engine with natural voices, emotional expression, and broad Chinese/English voice coverage. This extension makes it practical to listen to papers, articles, notes, documentation, and everyday selected text directly from Raycast.
 
-**豆包语音合成（Doubao TTS）是目前中文 AI 语音合成领域的标杆产品。** 在中文 TTS 的自然度、情感表达和音色丰富度上，豆包稳居第一梯队，远超传统 TTS 引擎。本扩展通过直接调用 V3 HTTP API，让你在 Raycast 中即可使用顶级中文 TTS —— 无需安装任何额外应用。
+## Features
 
-### Who is this for? | 适用人群
+- **Quick Read**: select text and read it aloud instantly without opening a view.
+- **Voice Selection**: browse 90+ voices organized by category.
+- **Select Quick Read Voice**: choose and preview the voice used by Quick Read.
+- **Set Quick Read Voice**: set any listed voice as the Quick Read default from the action panel.
+- **Stop Reading**: stop playback anytime, or trigger Quick Read again to toggle playback off.
+- **Smart Chunking**: split long text by sentence and punctuation.
+- **Pipelined Playback**: synthesize the next text chunk while the current chunk is playing.
+- **Model Switching**: supports Doubao TTS 2.0, TTS 1.0, and voice clone resource IDs.
+- **New and Legacy Auth**: use the new API Key flow or keep legacy App ID / Access Key credentials.
 
-- **Researchers** — Listen to papers and documents, free your eyes | 科研工作者 — 朗读论文、文档，解放双眼
-- **Developers** — Review docs, READMEs, and comments by ear | 开发者 / 码农 — 听取技术文档，换个方式审阅
-- **Language learners** — Hear standard Chinese pronunciation | 语言学习者 — 听取标准中文发音
-- **Content creators** — Preview how your text sounds | 内容创作者 — 快速预览文本的语音效果
-- **Anyone who needs TTS** — Select text, press a key, listen | 任何有 TTS 需求的人 — 选中文字，一键朗读
+## Screenshots
 
-## Features | 功能特性
+![Doubao TTS Screenshot](metadata/doubao-tts-1.png)
 
-- **Quick Read** — Select text, read aloud instantly (no UI) | 选中文字，一键朗读
-- **Voice Selection** — Browse 90+ voices organized by category | 从 90+ 音色中选择
-- **Select Quick Read Voice** — Choose and preview the voice used by Quick Read | 选择并试听 Quick Read 默认音色
-- **Stop Reading** — Stop playback anytime | 随时停止播放
-- **Toggle mode** — Trigger Quick Read again to stop | 再次触发即可停止
-- **Smart chunking** — Auto-split long text by sentence | 自动按句子拆分长文本
-- **Model switching** — TTS 2.0 (recommended) and TTS 1.0 | 支持 2.0 和 1.0 模型
-- **Chinese & English** — Built-in voices for both languages | 内置中英文音色
+## Installation
 
-## Screenshots | 截图
+### Prerequisites
 
-| Command List 命令列表 | Preferences 偏好设置 | Extension Management 扩展管理 |
-|:---:|:---:|:---:|
-| ![Command List](media/command-list.png) | ![Preferences](media/preferences.png) | ![Extension Management](media/extension-management.png) |
+- [Raycast](https://www.raycast.com/) installed
+- A Volcengine account with Doubao TTS enabled
 
-## Installation | 安装
+### Setup
 
-### Prerequisites | 前置要求
+1. Install **Doubao TTS** from the Raycast Store.
+2. Open the extension preferences.
+3. Configure one authentication method:
+   - Preferred: fill **API Key** from the new Volcengine Doubao Speech console.
+   - Legacy fallback: leave API Key empty and fill **App ID** + **Access Key**.
+4. Bind a hotkey to **Quick Read Selected Text** for the fastest workflow.
 
-- [Raycast](https://www.raycast.com/) installed | 已安装
-- A Volcengine account with **Doubao TTS** enabled ([guide below](#get-app-id--access-key--获取-app-id-和-access-key)) | 火山引擎账号，已开通豆包语音合成服务
+## Configuration
 
-### Steps | 安装步骤
+| Setting | Description | Required |
+| --- | --- | :---: |
+| API Key | New Volcengine Doubao Speech API Key. Used first when present. | Recommended |
+| App ID | Legacy Volcengine TTS App ID. Used only when API Key is empty. | Optional |
+| Access Key | Legacy Volcengine TTS Access Key. Used only when API Key is empty. | Optional |
+| Model Version | TTS model/resource ID. Defaults to Doubao TTS 2.0. | Optional |
+| Default Voice | Voice used by Quick Read when no override is selected. | Optional |
+| Speech Rate | Playback speed from 0.5x to 2.0x. | Optional |
 
-1. Search **"Doubao TTS"** in the [Raycast Store](https://www.raycast.com/store), install the extension | 在 Raycast 应用商店中搜索 **"Doubao TTS"**，下载安装
-2. Configure your **API Key** on first launch, or use legacy **App ID** + **Access Key** ([guide below](#get-api-key-or-legacy-credentials--获取-api-key-或旧版凭证)) | 首次启动时配置 API Key，或继续使用旧版 App ID + Access Key
-3. Bind a hotkey to **Quick Read Selected Text** ([how?](#bind-a-hotkey-highly-recommended--绑定快捷键强烈推荐)) | 为 Quick Read 绑定快捷键
-4. Select any text, press the hotkey — done! | 选中文字，按下快捷键，即刻朗读！
+## Usage
 
-## Configuration | 配置
+### Quick Read
 
-Open the extension preferences before first use and configure one authentication method. | 首次使用前打开扩展偏好设置，并配置一种鉴权方式。
+1. Select text in any macOS app.
+2. Open Raycast and run **Quick Read Selected Text**.
+3. Trigger the command again to stop playback.
 
-| Setting 配置项 | Description 说明 | Required 必填 |
-|--------|------|:----:|
-| **API Key** | New Volcengine Doubao Speech API Key; preferred 新版 API Key，优先使用 | recommended |
-| App ID | Legacy Volcengine app identifier; fallback only 旧版应用标识，仅作兼容回退 | |
-| Access Key | Legacy Volcengine access key; fallback only 旧版访问密钥，仅作兼容回退 | |
-| Model Version | TTS model (default: 2.0) 语音合成模型 | |
-| Default Voice | Voice for Quick Read 默认音色 | |
-| Speech Rate | Playback speed (0.5x–2.0x) 语速 | |
+### Select the Quick Read Voice
 
-Fill **API Key** if you use the new Volcengine console. If API Key is empty, the extension falls back to legacy **App ID** + **Access Key**. | 使用新版控制台时只填 API Key；如果 API Key 为空，扩展会自动回退到旧版 App ID + Access Key。
+1. Run **Select Quick Read Voice**.
+2. Search or browse voices compatible with the selected model.
+3. Press Enter to set the selected voice.
+4. Use **Preview Voice** to audition a voice with selected or clipboard text.
 
-### Get API Key or Legacy Credentials | 获取 API Key 或旧版凭证
+### Read with a Specific Voice
 
-1. Sign up and log in to [Volcengine Console](https://console.volcengine.com/) | 注册并登录火山引擎控制台
-2. Go to [Speech → Doubao TTS](https://console.volcengine.com/speech/service/10007) | 进入语音技术 → 豆包语音合成
-3. Enable the service if not already active | 如尚未开通，点击「开通服务」
-4. For the new console, create or copy an **API Key** and paste it into the `API Key` preference | 新版控制台创建或复制 API Key，并填入扩展的 `API Key`
-5. For legacy console credentials, leave `API Key` empty and fill | 如果继续使用旧版控制台凭证，请留空 `API Key` 并填写：
-   - **App ID** = `X-Api-App-Id`
-   - **Access Key** (Access Token) = `X-Api-Access-Key`
-6. See also: [Quick Start (New Console)](https://www.volcengine.com/docs/6561/2119699), [API Key Usage](https://www.volcengine.com/docs/6561/1816214), and [Console FAQ](https://www.volcengine.com/docs/6561/196768) | 也可参考新版控制台快速入门、API Key 使用说明和控制台 FAQ
+1. Select text.
+2. Run **Read with Voice Selection**.
+3. Pick a voice and press Enter to read.
+4. Use **Use as Quick Read Voice** from the action panel to make that voice the Quick Read default.
 
-> **Tip**: New Volcengine users get a free quota. Check the console for details. | 火山引擎新用户有免费额度，具体以控制台显示为准。
+## Technical Details
 
-### Model Versions | 模型版本
-
-| Model 模型版本 | Resource ID | Description 说明 |
-|----------|-------------|------|
-| Doubao TTS 2.0 (Recommended) | `seed-tts-2.0` | Latest model, best quality 最新模型 |
-| Doubao TTS 1.0 | `seed-tts-1.0` | Classic model, more voices 经典模型 |
-| Doubao TTS 1.0 (High Concurrency) | `seed-tts-1.0-concurr` | Higher concurrency 更高并发 |
-| Voice Clone 2.0 | `seed-icl-2.0` | Voice cloning 声音克隆 |
-| Voice Clone 1.0 | `seed-icl-1.0` | Voice cloning 声音克隆 |
-
-> **Note**: Different models support different voices. TTS 2.0 shows only 2.0 voices; TTS 1.0 shows only 1.0 voices. | 不同模型版本支持不同音色。
-
-### Voice List | 音色列表
-
-90+ built-in voices organized by category | 扩展内置 90+ 音色，按分类组织：
-
-| Category 分类 | Examples 示例 | Model 模型 |
-|------|----------|----------|
-| General Female 通用女声 | Vivi, Xiaohe, Cancan | 1.0 / 2.0 |
-| General Male 通用男声 | Yunzhou, Xiaotian, Qingcang | 1.0 / 2.0 |
-| Emotional Female 多情感女声 | Emotional Cancan, Sweet Female | 1.0 |
-| Emotional Male 多情感男声 | Emotional Male | 1.0 |
-| English 英文音色 | Tim, Adam, Amanda | 1.0 / 2.0 |
-| Japanese / Korean / Multilingual | Japanese Female, Korean Female | 1.0 / 2.0 |
-| Fun Accents / Role Play 趣味口音 | Dongbei Bro, Beijing Accent | 1.0 |
-
-Full voice list: [Doubao Voice Catalog](https://www.volcengine.com/docs/6561/1257544) | 完整音色列表：[豆包大模型音色列表](https://www.volcengine.com/docs/6561/1257544)
-
-## Usage | 使用方法
-
-### Quick Read (Recommended | 推荐)
-
-1. Select text in any app | 在任意应用中选中文字
-2. Open Raycast (`⌥ Space`) | 打开 Raycast
-3. Type `Quick Read` and press Enter | 输入 `Quick Read` 并回车
-4. It reads aloud! Trigger again to stop | 开始朗读！再次触发停止
-
-### Bind a Hotkey (Highly Recommended) | 绑定快捷键（强烈推荐）
-
-Bind a global hotkey to Quick Read for the ultimate workflow: **select text → press hotkey → instant reading**, no need to open Raycast every time.
-
-为 Quick Read 绑定全局快捷键，实现 **选中文字 → 按快捷键 → 自动朗读** 的极简体验：
-
-1. Open Raycast → search `Extensions` | 打开 Raycast → 搜索 `Extensions`
-2. Find **Doubao TTS** | 找到 Doubao TTS 扩展
-3. Click `Record Hotkey` next to **Quick Read Selected Text** | 点击 `Record Hotkey`
-4. Press your desired key combo (e.g. `⌥ R`, `⌃ ⌥ S`) | 按下你想要的快捷键组合
-5. Done! Select text anywhere and press the hotkey to read | 完成！此后选中文字按快捷键即可朗读
-
-> **Tip**: You can also bind a hotkey to Stop Reading for quick stopping. | 也可以为 Stop Reading 绑定快捷键。
-
-### Read with Voice Selection | 选择音色朗读
-
-1. Select text | 选中文字
-2. Open `Read with Voice Selection` in Raycast | 在 Raycast 中打开
-3. Browse voices, pick one | 浏览音色列表
-4. Press Enter to start | 按回车开始朗读
-5. Use `Use as Quick Read Voice` to make a voice the Quick Read default | 可用 `Use as Quick Read Voice` 将音色设为 Quick Read 默认音色
-
-### Select Quick Read Voice | 选择默认音色
-
-1. Open `Select Quick Read Voice` in Raycast | 在 Raycast 中打开
-2. Search or browse voices compatible with the current model | 搜索或浏览当前模型支持的音色
-3. Press Enter to set the selected voice as Quick Read voice | 按回车设为 Quick Read 音色
-4. Use `Preview Voice` to audition a voice with selected or clipboard text | 用 `Preview Voice` 试听当前选区或剪贴板文本
-5. Use `Reset to Preference Default` to return to the extension preference default | 用 `Reset to Preference Default` 恢复偏好设置里的默认音色
-
-### Stop Reading | 停止播放
-
-- Run `Stop Reading` in Raycast | 执行 `Stop Reading` 命令
-- Or trigger Quick Read again while playing | 或播放时再次触发 Quick Read
-
-## Development | 开发
-
-### Project Structure | 项目结构
-
-```
-raycast-doubao-tts/
-├── src/
-│   ├── api/
-│   │   ├── volcengine-tts.ts   # V3 API client | API 客户端
-│   │   └── types.ts            # TypeScript types | 类型定义
-│   ├── constants/
-│   │   └── voices.ts           # 90+ voice configs | 音色配置
-│   ├── utils/
-│   │   ├── audio-player.ts     # Audio player (afplay) | 播放器
-│   │   └── text-chunker.ts     # Smart text chunking | 文本分片
-│   ├── quick-read.tsx          # Quick Read command
-│   ├── read-with-voice.tsx     # Voice selection command
-│   ├── select-voice.tsx        # Quick Read voice picker
-│   └── stop-reading.tsx        # Stop playback command
-├── assets/
-│   └── command-icon.png        # Extension icon
-├── package.json
-└── tsconfig.json
-```
-
-### Local Development | 本地开发
-
-```bash
-npm install    # Install dependencies | 安装依赖
-npm run dev    # Dev mode (hot reload) | 开发模式
-npm run build  # Build | 构建
-npm run lint   # Lint | 代码检查
-```
-
-### Technical Details | 技术细节
-
-- **API**: Volcengine Doubao TTS V3 HTTP unidirectional streaming | 火山引擎豆包 TTS V3 HTTP 流式接口
-- **Auth**: HTTP Headers (`X-Api-Key`, `X-Api-Resource-Id`) with legacy fallback (`X-Api-App-Id`, `X-Api-Access-Key`)
-- **Response**: JSON Lines (NDJSON), one JSON object per line
+- **API**: Volcengine Doubao TTS V3 HTTP unidirectional streaming
+- **Auth**: `X-Api-Key` + `X-Api-Resource-Id`, with legacy fallback to `X-Api-App-Id` + `X-Api-Access-Key`
+- **Response**: JSON Lines (NDJSON)
 - **Audio**: MP3, 24000 Hz
-- **Chunking**: Smart split by punctuation, ≤1024 UTF-8 bytes per chunk | 按标点拆分
-- **Playback pipeline**: While one chunk is playing, the next chunk is synthesized in the background | 播放当前分片时预合成下一分片
+- **Chunking**: smart split by punctuation, up to 1024 UTF-8 bytes per chunk
 - **Playback**: macOS built-in `afplay`
-- **Cross-command stop**: PID file (`$TMPDIR/doubao-tts.pid`)
+- **Stop Control**: shared PID file at `$TMPDIR/doubao-tts.pid`
 
-## References | 相关文档
+## References
 
 - [Raycast Extension Docs](https://developers.raycast.com/)
-- [Doubao TTS V3 HTTP API](https://www.volcengine.com/docs/6561/1598757) | 豆包语音合成大模型 V3
-- [Doubao Voice Catalog](https://www.volcengine.com/docs/6561/1257544) | 豆包大模型音色列表
-- [Volcengine Console FAQ](https://www.volcengine.com/docs/6561/196768) | 火山引擎控制台 FAQ
+- [Doubao TTS V3 HTTP API](https://www.volcengine.com/docs/6561/1598757)
+- [Doubao Voice Catalog](https://www.volcengine.com/docs/6561/1257544)
+- [Volcengine Console FAQ](https://www.volcengine.com/docs/6561/196768)
 
-## Acknowledgements | 致谢
+## Acknowledgements
 
-- [Bob Plugin - Doubao TTS](https://github.com/Littlecowherd/bob-plugin-doubao-tts) — Inspired the configuration approach | 本项目参考了其配置方案
-- [Volcengine](https://www.volcengine.com/) — Doubao TTS API provider | 提供豆包语音合成 API
+- [Bob Plugin - Doubao TTS](https://github.com/Littlecowherd/bob-plugin-doubao-tts) inspired the configuration approach.
+- [Volcengine](https://www.volcengine.com/) provides the Doubao TTS API.
 
-## License | 许可证
+## License
 
 [MIT](LICENSE)
+
+---
+
+**中文文档**: [README.zh.md](README.zh.md)
