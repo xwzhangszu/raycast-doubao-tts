@@ -29,6 +29,7 @@
 
 - **Quick Read** — Select text, read aloud instantly (no UI) | 选中文字，一键朗读
 - **Voice Selection** — Browse 90+ voices organized by category | 从 90+ 音色中选择
+- **Select Quick Read Voice** — Choose and preview the voice used by Quick Read | 选择并试听 Quick Read 默认音色
 - **Stop Reading** — Stop playback anytime | 随时停止播放
 - **Toggle mode** — Trigger Quick Read again to stop | 再次触发即可停止
 - **Smart chunking** — Auto-split long text by sentence | 自动按句子拆分长文本
@@ -136,6 +137,15 @@ Bind a global hotkey to Quick Read for the ultimate workflow: **select text → 
 2. Open `Read with Voice Selection` in Raycast | 在 Raycast 中打开
 3. Browse voices, pick one | 浏览音色列表
 4. Press Enter to start | 按回车开始朗读
+5. Use `Use as Quick Read Voice` to make a voice the Quick Read default | 可用 `Use as Quick Read Voice` 将音色设为 Quick Read 默认音色
+
+### Select Quick Read Voice | 选择默认音色
+
+1. Open `Select Quick Read Voice` in Raycast | 在 Raycast 中打开
+2. Search or browse voices compatible with the current model | 搜索或浏览当前模型支持的音色
+3. Press Enter to set the selected voice as Quick Read voice | 按回车设为 Quick Read 音色
+4. Use `Preview Voice` to audition a voice with selected or clipboard text | 用 `Preview Voice` 试听当前选区或剪贴板文本
+5. Use `Reset to Preference Default` to return to the extension preference default | 用 `Reset to Preference Default` 恢复偏好设置里的默认音色
 
 ### Stop Reading | 停止播放
 
@@ -159,6 +169,7 @@ raycast-doubao-tts/
 │   │   └── text-chunker.ts     # Smart text chunking | 文本分片
 │   ├── quick-read.tsx          # Quick Read command
 │   ├── read-with-voice.tsx     # Voice selection command
+│   ├── select-voice.tsx        # Quick Read voice picker
 │   └── stop-reading.tsx        # Stop playback command
 ├── assets/
 │   └── command-icon.png        # Extension icon

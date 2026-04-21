@@ -1,7 +1,8 @@
 import { getSelectedText, showHUD, showToast, Toast, openExtensionPreferences } from "@raycast/api";
-import { synthesizeSpeech, buildOptionsFromPrefs, TTSApiError } from "./api/volcengine-tts";
+import { synthesizeSpeech, TTSApiError } from "./api/volcengine-tts";
 import { chunkText } from "./utils/text-chunker";
 import { AudioPlayer, stopExternalPlayback } from "./utils/audio-player";
+import { buildDefaultOptionsFromPrefs } from "./utils/voice-preferences";
 
 export default async function QuickRead() {
   // Toggle: if our afplay is already running, stop it and return
@@ -21,7 +22,7 @@ export default async function QuickRead() {
       return;
     }
 
-    const options = buildOptionsFromPrefs();
+    const options = await buildDefaultOptionsFromPrefs();
     const chunks = chunkText(selectedText);
 
     await showHUD(`🎙️ Reading ${selectedText.length} chars (${chunks.length} chunks)...`);
