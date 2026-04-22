@@ -1,24 +1,21 @@
-# Doubao TTS Changelog
+# MiMo TTS Changelog
 
 ## [Update] - {PR_MERGE_DATE}
 
-- Add Select Quick Read Voice for choosing and previewing the default Quick Read voice
-- Keep Quick Read voice selection in the dedicated Select Quick Read Voice command
-- Sync the TTS 2.0 voice selector with the official Volcengine Doubao voice catalog
-- Add Volcengine X-Api-Key authentication without breaking existing App ID and Access Key setups
-- Switch synthesis transport to the V3 bidirectional WebSocket streaming API
-- Add a unique X-Api-Connect-Id header for each WebSocket connection
-- Cancel lookahead synthesis when playback is stopped
-- Increase the default text chunk size for fewer WebSocket sessions on medium-length articles
-- Refresh the extension icon with light and dark theme variants
+- Switch the synthesis backend to Xiaomi MiMo's OpenAI-compatible TTS API.
+- Use Xiaomi MiMo Token Plan credentials, with a configurable Token Plan Base URL.
+- Replace the large legacy voice catalog with the official MiMo built-in voices.
+- Add Raycast detail panels for voice browsing and current selection context.
+- Add natural-language speaking style support through the MiMo `user` message.
+- Add Read with Controls for structured speech rate, style tags, rhythm events, emotion states, and voice features.
+- Inject assistant-side control tags per chunk so long-form playback keeps the selected style.
+- Request WAV audio and play returned base64 audio through the existing macOS playback pipeline.
+- Rename package metadata, commands, preferences, temp files, and documentation to MiMo TTS.
 
 ## [Initial Version] - 2026-03-05
 
-- Quick Read: select text and read aloud with one command (toggle to stop)
-- Voice Selection: browse 90+ voices organized by category
-- Stop Reading: dedicated command to stop playback
-- Smart text chunking for long text (≤1024 UTF-8 bytes per chunk)
-- Support for TTS 2.0 and TTS 1.0 model versions
-- Voice-model compatibility validation
-- Adjustable speech rate (0.5x to 2.0x)
-- Cross-command playback control via PID file
+- Quick Read: select text and read aloud with one command, with toggle-to-stop behavior.
+- Voice selection and preview command.
+- Dedicated Stop Reading command.
+- Smart text chunking for long text.
+- Cross-command playback control via PID file.

@@ -1,15 +1,30 @@
 export interface TTSOptions {
-  speaker: string;
-  speechRate: number;
+  model: MimoTTSModel;
+  voice: string;
+  stylePrompt?: string;
+  openingStyleTags?: string[];
+  audioEventTags?: string[];
   format: string;
   sampleRate: number;
 }
 
+export interface TTSOptionOverrides {
+  speechRate?: string;
+  baseStylePrompt?: string;
+  additionalStylePrompt?: string;
+  openingStyleTags?: string[];
+  audioEventTags?: string[];
+}
+
+export type MimoTTSModel = "mimo-v2.5-tts" | "mimo-v2-tts";
+
 export interface VoiceConfig {
   id: string;
   name: string;
-  gender: "female" | "male" | "child";
+  gender: "female" | "male" | "neutral";
   category: string;
-  free: boolean;
-  model: "seed-tts-1.0" | "seed-tts-2.0";
+  language: string;
+  description: string;
+  models: MimoTTSModel[];
+  recommended?: boolean;
 }

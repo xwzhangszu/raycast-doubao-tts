@@ -1,8 +1,8 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
-  "name": "doubao-tts",
-  "title": "Doubao TTS",
-  "description": "Read selected text aloud using Volcengine Doubao TTS with 160+ Chinese and English voices",
+  "name": "mimo-tts",
+  "title": "MiMo TTS",
+  "description": "Expressive Xiaomi MiMo TTS for Raycast with style, rhythm, and pace controls",
   "icon": "command-icon.png",
   "author": "xianwei_zhang",
   "categories": [
@@ -17,29 +17,41 @@
     {
       "name": "quick-read",
       "title": "Quick Read Selected Text",
-      "subtitle": "Doubao TTS",
-      "description": "Read selected text with default voice. Trigger again to stop.",
+      "subtitle": "MiMo TTS",
+      "description": "Read selected text with your default MiMo voice. Trigger again to stop.",
+      "icon": "command-icon.png",
       "mode": "no-view"
     },
     {
       "name": "read-with-voice",
-      "title": "Read with Voice Selection",
-      "subtitle": "Doubao TTS",
-      "description": "Browse 160+ voices and read selected text aloud",
+      "title": "Read with Voice",
+      "subtitle": "MiMo TTS",
+      "description": "Browse MiMo voices and read selected text aloud",
+      "icon": "command-icon.png",
+      "mode": "view"
+    },
+    {
+      "name": "read-with-controls",
+      "title": "Read with Controls",
+      "subtitle": "MiMo TTS",
+      "description": "Read text with structured MiMo style, rhythm, emotion, and voice controls",
+      "icon": "command-icon.png",
       "mode": "view"
     },
     {
       "name": "select-voice",
       "title": "Select Quick Read Voice",
-      "subtitle": "Doubao TTS",
+      "subtitle": "MiMo TTS",
       "description": "Choose and preview the voice used by Quick Read",
+      "icon": "command-icon.png",
       "mode": "view"
     },
     {
       "name": "stop-reading",
       "title": "Stop Reading",
-      "subtitle": "Doubao TTS",
+      "subtitle": "MiMo TTS",
       "description": "Stop the current TTS playback",
+      "icon": "command-icon.png",
       "mode": "no-view"
     }
   ],
@@ -48,53 +60,34 @@
       "name": "apiKey",
       "type": "password",
       "required": false,
-      "title": "API Key",
-      "description": "Volcengine Doubao Speech API Key (preferred, X-Api-Key)",
-      "placeholder": "Enter your API Key"
+      "title": "Token Plan API Key",
+      "description": "Xiaomi MiMo Token Plan API Key, usually starts with tp-",
+      "placeholder": "tp-..."
     },
     {
-      "name": "appId",
+      "name": "tokenPlanBaseUrl",
       "type": "textfield",
       "required": false,
-      "title": "App ID",
-      "description": "Legacy Volcengine TTS App ID (used only when API Key is empty)",
-      "placeholder": "Enter your App ID"
+      "title": "Token Plan Base URL",
+      "description": "OpenAI-compatible Token Plan base URL shown on your subscription page",
+      "placeholder": "https://token-plan-cn.xiaomimimo.com/v1",
+      "default": "https://token-plan-cn.xiaomimimo.com/v1"
     },
     {
-      "name": "accessKey",
-      "type": "password",
-      "required": false,
-      "title": "Access Key",
-      "description": "Legacy Volcengine TTS Access Key (used only when API Key is empty)",
-      "placeholder": "Enter your Access Key"
-    },
-    {
-      "name": "resourceId",
+      "name": "modelId",
       "type": "dropdown",
       "required": false,
-      "title": "Model Version",
-      "description": "TTS model version — different versions support different voices",
-      "default": "seed-tts-2.0",
+      "title": "TTS Model",
+      "description": "MiMo speech synthesis model",
+      "default": "mimo-v2.5-tts",
       "data": [
         {
-          "title": "Doubao TTS 2.0 (Recommended)",
-          "value": "seed-tts-2.0"
+          "title": "MiMo-V2.5-TTS (Recommended)",
+          "value": "mimo-v2.5-tts"
         },
         {
-          "title": "Doubao TTS 1.0",
-          "value": "seed-tts-1.0"
-        },
-        {
-          "title": "Doubao TTS 1.0 (High Concurrency)",
-          "value": "seed-tts-1.0-concurr"
-        },
-        {
-          "title": "Voice Clone 2.0",
-          "value": "seed-icl-2.0"
-        },
-        {
-          "title": "Voice Clone 1.0",
-          "value": "seed-icl-1.0"
+          "title": "MiMo-V2-TTS (Legacy)",
+          "value": "mimo-v2-tts"
         }
       ]
     },
@@ -103,68 +96,52 @@
       "type": "dropdown",
       "required": false,
       "title": "Default Voice",
-      "description": "Voice used for Quick Read command",
-      "default": "zh_female_vv_uranus_bigtts",
+      "description": "Voice used for Quick Read",
+      "default": "mimo_default",
       "data": [
         {
-          "title": "Vivi 2.0 (Female, ZH)",
-          "value": "zh_female_vv_uranus_bigtts"
+          "title": "MiMo Default",
+          "value": "mimo_default"
         },
         {
-          "title": "Xiaohe 2.0 (Female, ZH)",
-          "value": "zh_female_xiaohe_uranus_bigtts"
+          "title": "冰糖 (Chinese, Female)",
+          "value": "冰糖"
         },
         {
-          "title": "Yunzhou 2.0 (Male, ZH)",
-          "value": "zh_male_m191_uranus_bigtts"
+          "title": "茉莉 (Chinese, Female)",
+          "value": "茉莉"
         },
         {
-          "title": "Xiaotian 2.0 (Male, ZH)",
-          "value": "zh_male_taocheng_uranus_bigtts"
+          "title": "苏打 (Chinese, Male)",
+          "value": "苏打"
         },
         {
-          "title": "Sweet Taozi 2.0 (Female, ZH)",
-          "value": "zh_female_tianmeitaozi_uranus_bigtts"
+          "title": "白桦 (Chinese, Male)",
+          "value": "白桦"
         },
         {
-          "title": "Warm Mom 2.0 (Female, ZH)",
-          "value": "zh_female_wenroumama_uranus_bigtts"
+          "title": "Mia (English, Female)",
+          "value": "Mia"
         },
         {
-          "title": "Gentle Xiaoya 2.0 (Female, ZH)",
-          "value": "zh_female_wenrouxiaoya_uranus_bigtts"
+          "title": "Chloe (English, Female)",
+          "value": "Chloe"
         },
         {
-          "title": "Erudite Uncle 2.0 (Male, ZH)",
-          "value": "zh_male_yuanboxiaoshu_uranus_bigtts"
+          "title": "Milo (English, Male)",
+          "value": "Milo"
         },
         {
-          "title": "Late Night Podcast 2.0 (Male, ZH)",
-          "value": "zh_male_shenyeboke_uranus_bigtts"
+          "title": "Dean (English, Male)",
+          "value": "Dean"
         },
         {
-          "title": "Cancan 1.0 (Female, ZH)",
-          "value": "zh_female_cancan_mars_bigtts"
+          "title": "MiMo Chinese Female (Legacy)",
+          "value": "default_zh"
         },
         {
-          "title": "Qingcang 1.0 (Male, ZH)",
-          "value": "zh_male_qingcang_mars_bigtts"
-        },
-        {
-          "title": "Gentle Female 1.0 (ZH)",
-          "value": "zh_female_qinqienvsheng_moon_bigtts"
-        },
-        {
-          "title": "Sunny Youth 1.0 (Male, ZH)",
-          "value": "zh_male_yangguangqingnian_moon_bigtts"
-        },
-        {
-          "title": "Tim 2.0 (Male, EN)",
-          "value": "en_male_tim_uranus_bigtts"
-        },
-        {
-          "title": "Adam 1.0 (Male, EN)",
-          "value": "en_male_adam_mars_bigtts"
+          "title": "MiMo English Female (Legacy)",
+          "value": "default_en"
         }
       ]
     },
@@ -173,7 +150,7 @@
       "type": "dropdown",
       "required": false,
       "title": "Speech Rate",
-      "description": "Playback speed for speech synthesis",
+      "description": "Natural-language speed guidance sent to MiMo",
       "default": "0",
       "data": [
         {
@@ -201,17 +178,23 @@
           "value": "100"
         }
       ]
+    },
+    {
+      "name": "stylePrompt",
+      "type": "textfield",
+      "required": false,
+      "title": "Speaking Style",
+      "description": "Optional natural-language direction, sent as the user message",
+      "placeholder": "Natural, clear, restrained, suitable for reading long text"
     }
   ],
   "dependencies": {
-    "@raycast/api": "^1.104.6",
-    "ws": "^8.20.0"
+    "@raycast/api": "^1.104.6"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^1.0.11",
     "@types/node": "^25.3.0",
     "@types/react": "^19.2.14",
-    "@types/ws": "^8.18.1",
     "eslint": "^8.57.0",
     "prettier": "^3.3.3",
     "typescript": "^5.9.3"

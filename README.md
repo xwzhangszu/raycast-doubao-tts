@@ -1,106 +1,93 @@
-# Doubao TTS — Raycast Extension
+# MiMo TTS
 
-<p align="center">
-  <img src="assets/command-icon.png" width="128" height="128" alt="Doubao TTS Icon" />
-</p>
+Turn selected text into expressive speech with Xiaomi MiMo TTS, directly from Raycast.
 
-<p align="center">
-  Select any text on macOS and read it aloud with <a href="https://www.raycast.com/">Raycast</a>, powered by <a href="https://www.volcengine.com/docs/6561/1329505">Volcengine Doubao TTS V3 WebSocket streaming</a>.
-</p>
+MiMo TTS is built for people who want more than plain text reading. It uses Xiaomi MiMo's speech synthesis API and exposes Raycast-native controls for voice, speaking style, rhythm, emotion, speech texture, and pace. The goal is simple: select text, choose how it should be performed, and listen without leaving your current workflow.
 
----
+## Why MiMo
 
-## Why Doubao TTS?
+### Broad AI Ecosystem
 
-Doubao TTS is a high-quality Chinese AI speech synthesis engine with natural voices, emotional expression, and broad Chinese/English voice coverage. This extension makes it practical to listen to papers, articles, notes, documentation, and everyday selected text directly from Raycast.
+Xiaomi MiMo is part of a fast-growing AI model ecosystem. The official MiMo documentation lists support for mainstream agent and coding tools, including OpenCode, OpenClaw, Claude Code, Cline, Kilo Code, Roo Code, Codex, Cherry Studio, Zed, and Qwen Code. Xiaomi has also announced an official Hermes Agent integration, positioning MiMo as a practical model family for serious agent workflows.
+
+For Raycast users, that matters because MiMo is not an isolated TTS endpoint. It belongs to a broader model platform with OpenAI-compatible access, Token Plan credentials, and a tool ecosystem designed for frequent daily use.
+
+### Expressive TTS Quality
+
+MiMo-V2.5-TTS supports natural and fluent speech synthesis with built-in Chinese and English voices. This extension focuses on making those expressive capabilities easy to use from Raycast:
+
+- read selected text immediately with a default voice;
+- browse and preview MiMo built-in voices;
+- keep long text readable through chunked playback;
+- stop playback from any command;
+- request WAV audio and play it locally with macOS audio tools.
+
+The largest difference from a basic TTS extension is control. Instead of only sending text to be read aloud, MiMo TTS can send natural-language performance direction to the model. You can ask for a warmer tone, a slower narration pace, a tense whisper, a more energetic delivery, or a tired but gentle reading style.
+
+### Deep Performance Control
+
+Xiaomi's MiMo-V2.5-TTS documentation supports two control paths, and this extension uses both:
+
+- **Natural-language control** is sent as a `user` message. It adjusts tone, pacing, emotion, and performance style without becoming part of the spoken text.
+- **Audio tag control** is inserted into the `assistant` message with the target text. It can guide rhythm, emotion, voice texture, laughter, breath, pauses, and other speech events.
+
+The **Read with Controls** command turns those capabilities into a Raycast form. You can preset speech rate, opening style tags, rhythm events, emotion states, voice features, expressive tags, and director-style prompts before synthesis starts. This is the core advantage of the extension: it treats TTS as performance direction, not just plain playback.
 
 ## Features
 
-- **Quick Read**: select text and read it aloud instantly without opening a view.
-- **Voice Selection**: browse 160+ voices organized by category, including the official Doubao TTS 2.0 voice catalog.
-- **Select Quick Read Voice**: choose and preview the voice used by Quick Read.
-- **Stop Reading**: stop playback anytime, or trigger Quick Read again to toggle playback off.
-- **Smart Chunking**: split long text by sentence and punctuation.
-- **Pipelined Playback**: synthesize the next text chunk while the current chunk is playing.
-- **Model Switching**: supports Doubao TTS 2.0, TTS 1.0, and voice clone resource IDs.
-- **Flexible Auth**: uses the current Volcengine `X-Api-Key` flow, with legacy App ID and Access Key fallback.
+- **Quick Read**: select text anywhere, run the command, and listen immediately.
+- **Read with Voice**: browse MiMo voices, inspect voice details, and read with the selected voice.
+- **Read with Controls**: combine speaking rate, style tags, rhythm events, emotion states, voice texture, expressive tags, and director prompts.
+- **Natural Style Prompt**: define reusable tone and pacing guidance in preferences.
+- **Voice Preview**: audition voices before setting the default Quick Read voice.
+- **Chunked Playback**: synthesize long selections in smaller chunks and play them sequentially.
+- **Global Stop**: stop the current playback from the dedicated Stop Reading command.
 
-## Screenshots
+## Commands
 
-![Doubao TTS Screenshot](metadata/doubao-tts-1.png)
+| Command | Purpose |
+| --- | --- |
+| Quick Read Selected Text | Read the current text selection with the default voice. Run again to stop current playback. |
+| Read with Voice | Browse voices, inspect details, and read the current selection with a chosen voice. |
+| Read with Controls | Tune speech rate, style tags, audio events, mixed emotions, voice texture, and director-mode instructions. |
+| Select Quick Read Voice | Preview and save the voice used by Quick Read. |
+| Stop Reading | Stop the active playback process. |
 
-## Installation
+## Setup
 
-### Prerequisites
+1. Subscribe to Xiaomi MiMo Token Plan and open the [Subscription](https://platform.xiaomimimo.com/#/console/plan-manage) page.
+2. Open Raycast extension preferences for **MiMo TTS**.
+3. Fill **Token Plan API Key** with your `tp-...` key.
+4. Keep **Token Plan Base URL** as `https://token-plan-cn.xiaomimimo.com/v1`, or replace it with the Singapore/Europe URL shown on your subscription page.
+5. Keep **MiMo-V2.5-TTS** unless you need the legacy MiMo-V2 voices.
+6. Optionally set a default voice, speech rate guidance, and speaking style.
 
-- [Raycast](https://www.raycast.com/) installed
-- A Volcengine account with Doubao TTS enabled
+## Preferences
 
-### Setup
+| Preference | Description |
+| --- | --- |
+| Token Plan API Key | Sent as the `api-key` header. Token Plan keys start with `tp-` and cannot be mixed with pay-as-you-go `sk-` keys. |
+| Token Plan Base URL | OpenAI-compatible Token Plan base URL. Defaults to `https://token-plan-cn.xiaomimimo.com/v1`; change it if your subscription page shows another cluster. |
+| TTS Model | `mimo-v2.5-tts` by default; `mimo-v2-tts` is available for legacy voices. |
+| Default Voice | Voice used by Quick Read unless overridden in Select Quick Read Voice. |
+| Speech Rate | Converted into a natural-language speed instruction for MiMo. |
+| Speaking Style | Optional free-form direction sent as the `user` message. |
 
-1. Install **Doubao TTS** from the Raycast Store.
-2. Open the extension preferences.
-3. Fill **API Key** from the current Volcengine Doubao Speech console, or keep using your existing App ID and Access Key.
-4. Bind a hotkey to **Quick Read Selected Text** for the fastest workflow.
+## Implementation Notes
 
-## Configuration
-
-| Setting | Description | Required |
-| --- | --- | :---: |
-| API Key | Volcengine Doubao Speech API Key. Preferred for new users. | Optional |
-| App ID | Legacy Volcengine TTS App ID, used only when API Key is empty. | Optional |
-| Access Key | Legacy Volcengine TTS Access Key, used only when API Key is empty. | Optional |
-| Model Version | TTS model/resource ID. Defaults to Doubao TTS 2.0. | Optional |
-| Default Voice | Voice used by Quick Read when no override is selected. | Optional |
-| Speech Rate | Playback speed from 0.5x to 2.0x. | Optional |
-
-## Usage
-
-### Quick Read
-
-1. Select text in any macOS app.
-2. Open Raycast and run **Quick Read Selected Text**.
-3. Trigger the command again to stop playback.
-
-### Select the Quick Read Voice
-
-1. Run **Select Quick Read Voice**.
-2. Search or browse voices compatible with the selected model.
-3. Press Enter to set the selected voice.
-4. Use **Preview Voice** to audition a voice with selected or clipboard text.
-
-### Read with a Specific Voice
-
-1. Select text.
-2. Run **Read with Voice Selection**.
-3. Pick a voice and press Enter to read.
-
-## Technical Details
-
-- **API**: Volcengine Doubao TTS V3 WebSocket bidirectional streaming
-- **Auth**: `X-Api-Key` or legacy `X-Api-App-Id` + `X-Api-Access-Key`, plus `X-Api-Resource-Id` and per-connection `X-Api-Connect-Id`
-- **Response**: binary V3 WebSocket frames with streamed MP3 audio payloads
-- **Audio**: MP3, 24000 Hz
-- **Chunking**: smart split by punctuation, up to 4096 UTF-8 bytes per chunk
-- **Playback**: macOS built-in `afplay`
-- **Stop Control**: shared PID file at `$TMPDIR/doubao-tts.pid`
+- API transport: `POST {Token Plan Base URL}/chat/completions`.
+- The extension uses Xiaomi MiMo Token Plan credentials: `tp-...` API Key plus the Token Plan OpenAI-compatible Base URL.
+- The text to synthesize is sent as an `assistant` message, per MiMo's TTS rules.
+- Optional natural-language style direction is sent as a `user` message.
+- In **Read with Controls**, opening style tags are injected as `(tag1 tag2)` and audio-event tags as `（tag1，tag2）` at the beginning of each synthesized chunk.
+- Natural presets and director prompts are sent as `user` messages; selected audio tags are sent inside the `assistant` text.
+- If `singing` is selected, the extension forces the singing tag to be the only opening tag so it remains at the very beginning.
+- The extension requests WAV audio and plays the returned base64 data through `afplay`.
+- Stop control uses a shared PID file at `$TMPDIR/mimo-tts.pid`.
 
 ## References
 
-- [Raycast Extension Docs](https://developers.raycast.com/)
-- [Doubao TTS V3 WebSocket Bidirectional API](https://www.volcengine.com/docs/6561/1329505)
-- [Doubao Voice Catalog](https://www.volcengine.com/docs/6561/1257544)
-- [Volcengine Console FAQ](https://www.volcengine.com/docs/6561/196768)
-
-## Acknowledgements
-
-- [Bob Plugin - Doubao TTS](https://github.com/Littlecowherd/bob-plugin-doubao-tts) inspired the configuration approach.
-- [Volcengine](https://www.volcengine.com/) provides the Doubao TTS API.
-
-## License
-
-[MIT](LICENSE)
-
----
-
-**中文文档**: [README.zh.md](README.zh.md)
+- [Speech synthesis (MiMo-V2.5-TTS Series)](https://platform.xiaomimimo.com/static/docs/usage-guide/speech-synthesis-v2.5.md)
+- [Token Plan Quick Access](https://platform.xiaomimimo.com/static/docs/tokenplan/quick-access.md)
+- [MiMo Agent Tool Integrations](https://platform.xiaomimimo.com/static/docs/integration/tools-overview.md)
+- [MiMo Hermes Agent Integration](https://platform.xiaomimimo.com/static/docs/news/hermes-free.md)

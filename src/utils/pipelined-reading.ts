@@ -1,4 +1,4 @@
-import { synthesizeSpeech } from "../api/volcengine-tts";
+import { synthesizeSpeech } from "../api/mimo-tts";
 import type { TTSOptions } from "../api/types";
 import { AudioPlayer } from "./audio-player";
 
@@ -38,7 +38,7 @@ export async function playChunksWithLookahead(
       await callbacks.onFirstAudioReady?.();
     }
 
-    await player.playAudio(result.audio);
+    await player.playAudio(result.audio, options.format);
     if (player.isStopped()) break;
   }
 }

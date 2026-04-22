@@ -5,7 +5,7 @@ import { join } from "path";
 import { randomUUID } from "crypto";
 import { execSync } from "child_process";
 
-const PID_FILE = join(tmpdir(), "doubao-tts.pid");
+const PID_FILE = join(tmpdir(), "mimo-tts.pid");
 
 export class AudioPlayer {
   private currentProcess: ChildProcess | null = null;
@@ -23,10 +23,10 @@ export class AudioPlayer {
   /**
    * Play a single base64-encoded audio chunk.
    */
-  async playAudio(base64Audio: string): Promise<void> {
+  async playAudio(base64Audio: string, format = "wav"): Promise<void> {
     if (this.stopped) return;
 
-    const tempPath = this.saveTempFile(base64Audio);
+    const tempPath = this.saveTempFile(base64Audio, format);
 
     return new Promise<void>((resolve, reject) => {
       const proc = spawn("afplay", [tempPath]);
@@ -102,12 +102,13 @@ export class AudioPlayer {
     this.tempFiles = [];
   }
 
-  private saveTempFile(base64Audio: string): string {
+  private saveTempFile(base64Audio: string, format: string): string {
     const buffer = Buffer.from(base64Audio, "base64");
     if (buffer.length === 0) {
       throw new Error("Decoded audio data is empty");
     }
-    const fileName = `doubao-tts-${randomUUID()}.mp3`;
+    const extension = format.replace(/[^a-z0-9]/gi, "").toLowerCase() || "wav";
+    const fileName = `mimo-tts-${randomUUID()}.${extension}`;
     const filePath = join(tmpdir(), fileName);
     writeFileSync(filePath, new Uint8Array(buffer));
     this.tempFiles.push(filePath);

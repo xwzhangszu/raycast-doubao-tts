@@ -1,18 +1,8 @@
-import {
-  Action,
-  ActionPanel,
-  Color,
-  Icon,
-  List,
-  getPreferenceValues,
-  openExtensionPreferences,
-  showToast,
-  Toast,
-} from "@raycast/api";
+import { Action, ActionPanel, Color, Icon, List, Toast, openExtensionPreferences, showToast } from "@raycast/api";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { getBaseModel, synthesizeSpeech, buildOptionsFromPrefs, TTSApiError } from "./api/volcengine-tts";
+import { buildOptionsFromPrefs, getActiveModel, getModelLabel, synthesizeSpeech, TTSApiError } from "./api/mimo-tts";
 import type { VoiceConfig } from "./api/types";
-import { VOICE_CATEGORIES, getVoiceById, getVoicesByCategory } from "./constants/voices";
+import { MODEL_LABELS, VOICE_CATEGORIES, getVoiceById, getVoicesByCategory } from "./constants/voices";
 import { AudioPlayer } from "./utils/audio-player";
 import { getPreviewText } from "./utils/text-source";
 import {
@@ -21,12 +11,11 @@ import {
   setQuickReadVoiceOverride,
 } from "./utils/voice-preferences";
 
-const PREVIEW_FALLBACK_TEXT = "这是一段豆包 TTS 音色试听。";
+const PREVIEW_FALLBACK_TEXT = "这是一段 MiMo TTS 音色试听。";
 const PREVIEW_CHAR_LIMIT = 180;
 
 export default function SelectVoice() {
-  const prefs = getPreferenceValues<Preferences>();
-  const currentModel = getBaseModel(prefs.resourceId || "seed-tts-2.0");
+  const currentModel = getActiveModel();
   const [activeVoiceId, setActiveVoiceId] = useState<string | null>(null);
   const [usesOverride, setUsesOverride] = useState(false);
   const [previewingVoiceId, setPreviewingVoiceId] = useState<string | null>(null);
@@ -37,7 +26,7 @@ export default function SelectVoice() {
     () =>
       VOICE_CATEGORIES.map((category) => ({
         category,
-        voices: getVoicesByCategory(category).filter((voice) => voice.model === currentModel),
+        voices: getVoicesByCategory(category, currentModel),
       })).filter((group) => group.voices.length > 0),
     [currentModel],
   );
@@ -84,20 +73,13 @@ export default function SelectVoice() {
     try {
       const text = await getPreviewText(PREVIEW_FALLBACK_TEXT, PREVIEW_CHAR_LIMIT);
       if (player.isStopped()) return;
-      const audio = await synthesizeSpeech(text, buildOptionsFromPrefs(voice.id), player.signal);
+      const options = buildOptionsFromPrefs(voice.id);
+      const audio = await synthesizeSpeech(text, options, player.signal);
       if (player.isStopped()) return;
-      await player.playAudio(audio);
+      await player.playAudio(audio, options.format);
     } catch (error) {
       if (player.isStopped()) return;
-      if (error instanceof TTSApiError) {
-        await showToast({ style: Toast.Style.Failure, title: "Preview failed", message: error.message });
-      } else {
-        await showToast({
-          style: Toast.Style.Failure,
-          title: "Preview failed",
-          message: error instanceof Error ? error.message : String(error),
-        });
-      }
+      await showPreviewError(error);
     } finally {
       if (playerRef.current === player) setPreviewingVoiceId(null);
     }
@@ -111,17 +93,23 @@ export default function SelectVoice() {
     await showToast({ style: Toast.Style.Success, title: "Using preference default voice" });
   }, []);
 
+  const currentVoice = activeVoiceId ? getVoiceById(activeVoiceId) : undefined;
+
   return (
     <List
       isLoading={isLoading}
-      searchBarPlaceholder="Search and choose the Quick Read voice..."
+      isShowingDetail
+      searchBarPlaceholder="Search MiMo voices..."
       navigationTitle="Select Quick Read Voice"
     >
       <List.Section title="Current">
         <List.Item
-          title={activeVoiceId ? (getVoiceById(activeVoiceId)?.name ?? activeVoiceId) : "Preference default"}
-          subtitle={usesOverride ? "Quick Read override" : `Preference default for ${currentModel}`}
+          title={currentVoice?.name ?? activeVoiceId ?? "Preference default"}
+          subtitle={usesOverride ? "Quick Read override" : `Preference default · ${getModelLabel(currentModel)}`}
           icon={{ source: Icon.Star, tintColor: usesOverride ? Color.Yellow : Color.SecondaryText }}
+          detail={
+            <CurrentVoiceDetail voice={currentVoice} model={MODEL_LABELS[currentModel]} usesOverride={usesOverride} />
+          }
           actions={
             <ActionPanel>
               {usesOverride && (
@@ -139,12 +127,14 @@ export default function SelectVoice() {
             <List.Item
               key={voice.id}
               title={voice.name}
-              subtitle={voice.id}
-              icon={voice.gender === "female" ? Icon.Female : voice.gender === "male" ? Icon.Male : Icon.Person}
+              subtitle={voice.description}
+              icon={voiceIcon(voice)}
+              keywords={[voice.id, voice.language, voice.category]}
               accessories={[
                 ...(activeVoiceId === voice.id ? [{ tag: { value: "Quick Read", color: Color.Green } }] : []),
                 ...(previewingVoiceId === voice.id ? [{ tag: { value: "Previewing", color: Color.Blue } }] : []),
               ]}
+              detail={<VoiceDetail voice={voice} model={MODEL_LABELS[currentModel]} />}
               actions={
                 <ActionPanel>
                   <Action title="Set as Quick Read Voice" icon={Icon.Star} onAction={() => handleSetVoice(voice)} />
@@ -166,4 +156,88 @@ export default function SelectVoice() {
       ))}
     </List>
   );
+}
+
+function CurrentVoiceDetail({
+  voice,
+  model,
+  usesOverride,
+}: {
+  voice: VoiceConfig | undefined;
+  model: string;
+  usesOverride: boolean;
+}) {
+  return (
+    <List.Item.Detail
+      markdown={
+        voice
+          ? `## ${escapeMarkdown(voice.name)}\n\n${escapeMarkdown(voice.description)}`
+          : "## Preference default\n\nQuick Read will use the default voice configured in extension preferences."
+      }
+      metadata={
+        <List.Item.Detail.Metadata>
+          <List.Item.Detail.Metadata.Label title="Model" text={model} />
+          <List.Item.Detail.Metadata.Label
+            title="Mode"
+            text={usesOverride ? "Quick Read override" : "Preference default"}
+          />
+          {voice ? <List.Item.Detail.Metadata.Label title="Voice ID" text={voice.id} /> : null}
+        </List.Item.Detail.Metadata>
+      }
+    />
+  );
+}
+
+function VoiceDetail({ voice, model }: { voice: VoiceConfig; model: string }) {
+  return (
+    <List.Item.Detail
+      markdown={`## ${escapeMarkdown(voice.name)}\n\n${escapeMarkdown(voice.description)}\n\nUse preview to hear this voice with your selected text or clipboard text.`}
+      metadata={
+        <List.Item.Detail.Metadata>
+          <List.Item.Detail.Metadata.Label title="Voice ID" text={voice.id} />
+          <List.Item.Detail.Metadata.Label title="Model" text={model} />
+          <List.Item.Detail.Metadata.Label title="Language" text={voice.language} />
+          <List.Item.Detail.Metadata.TagList title="Traits">
+            <List.Item.Detail.Metadata.TagList.Item text={voice.gender} color={Color.Blue} />
+            <List.Item.Detail.Metadata.TagList.Item text={voice.category} color={Color.SecondaryText} />
+            {voice.recommended ? (
+              <List.Item.Detail.Metadata.TagList.Item text="Recommended" color={Color.Green} />
+            ) : null}
+          </List.Item.Detail.Metadata.TagList>
+        </List.Item.Detail.Metadata>
+      }
+    />
+  );
+}
+
+function voiceIcon(voice: VoiceConfig) {
+  if (voice.gender === "female") return Icon.Female;
+  if (voice.gender === "male") return Icon.Male;
+  return Icon.SpeakerHigh;
+}
+
+function escapeMarkdown(text: string): string {
+  return text.replace(/[\\`*_{}[\]()#+\-.!|>]/g, "\\$&");
+}
+
+async function showPreviewError(error: unknown): Promise<void> {
+  if (error instanceof TTSApiError) {
+    await showToast({
+      style: Toast.Style.Failure,
+      title:
+        error.code === -1 || error.code === 401 || error.code === 403 ? "Configuration Required" : "Preview failed",
+      message: error.message,
+      primaryAction:
+        error.code === -1 || error.code === 401 || error.code === 403
+          ? { title: "Open Preferences", onAction: () => openExtensionPreferences() }
+          : undefined,
+    });
+    return;
+  }
+
+  await showToast({
+    style: Toast.Style.Failure,
+    title: "Preview failed",
+    message: error instanceof Error ? error.message : String(error),
+  });
 }

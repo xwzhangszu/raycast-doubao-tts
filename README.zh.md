@@ -1,81 +1,48 @@
-# Doubao TTS — Raycast 扩展
+# MiMo TTS — Raycast 扩展
 
-<p align="center">
-  <img src="assets/command-icon.png" width="128" height="128" alt="Doubao TTS 图标" />
-</p>
+在 macOS 上选中任意文字，通过 Raycast 调用小米 MiMo TTS 朗读。
 
-<p align="center">
-  在 macOS 上选中任意文字，通过 <a href="https://www.raycast.com/">Raycast</a> 一键朗读，基于<a href="https://www.volcengine.com/docs/6561/1329505">火山引擎豆包语音合成大模型 V3 WebSocket 流式接口</a>。
-</p>
+## 功能
 
----
-
-## 功能特性
-
-- **一键朗读**：选中文字后快速朗读，无需打开视图。
-- **音色选择**：浏览 160+ 个中英文音色，包含官方豆包语音合成模型 2.0 音色列表。
-- **Quick Read 音色选择**：选择并试听 Quick Read 默认音色。
-- **停止播放**：随时停止播放，也可以再次触发 Quick Read 来停止。
-- **智能分片**：按句子和标点拆分长文本。
-- **流水线播放**：当前分片播放时，后台预合成下一分片。
-- **模型切换**：支持豆包 TTS 2.0、TTS 1.0 和声音复刻资源 ID。
-- **灵活鉴权**：优先使用当前火山引擎 `X-Api-Key` 鉴权方式，并保留旧版 App ID / Access Key 兼容。
-
-## 截图
-
-![Doubao TTS 截图](metadata/doubao-tts-1.png)
+- **Quick Read**：选中文字后一键朗读，再次触发可停止当前播放。
+- **音色浏览**：用 Raycast detail panel 展示 MiMo-V2.5 内置中英文音色。
+- **结构化控制**：组合语速、整体风格标签、节奏事件、情绪状态、语音特征和导演模式提示。
+- **试听与默认音色**：可试听音色，并设为 Quick Read 默认音色。
+- **风格提示词**：可用自然语言控制语气、情绪、节奏和朗读风格。
+- **长文本播放**：自动切分长选区，顺序合成并播放。
 
 ## 配置
 
-首次使用前，请打开扩展偏好设置。新用户建议填写当前控制台中的 **API Key**；已有用户也可以继续使用旧版 **App ID** 和 **Access Key**。
+1. 订阅小米 MiMo Token Plan，并打开 [Subscription](https://platform.xiaomimimo.com/#/console/plan-manage) 页面。
+2. 打开 Raycast 中 **MiMo TTS** 的扩展设置。
+3. 在 **Token Plan API Key** 中填写 `tp-...` 开头的套餐专属 Key。
+4. **Token Plan Base URL** 默认是 `https://token-plan-cn.xiaomimimo.com/v1`；如果订阅页显示新加坡或欧洲集群，就改成对应 URL。
+5. 默认使用 **MiMo-V2.5-TTS**；只有需要旧版音色时再切换到 **MiMo-V2-TTS**。
+6. 可按需设置默认音色、语速提示和朗读风格。
 
-| 配置项 | 说明 | 必填 |
-| --- | --- | :---: |
-| API Key | 豆包语音 API Key，新用户推荐使用。 | 可选 |
-| App ID | 旧版豆包 TTS App ID，仅在 API Key 为空时使用。 | 可选 |
-| Access Key | 旧版豆包 TTS Access Key，仅在 API Key 为空时使用。 | 可选 |
-| Model Version | 语音合成模型，默认 TTS 2.0。 | 可选 |
-| Default Voice | Quick Read 默认音色。 | 可选 |
-| Speech Rate | 语速，0.5x 到 2.0x。 | 可选 |
+## 命令
 
-## 使用方法
+| 命令 | 用途 |
+| --- | --- |
+| Quick Read Selected Text | 用默认音色朗读当前选区；再次触发停止播放。 |
+| Read with Voice | 浏览音色并选择一个音色朗读当前选区。 |
+| Read with Controls | 用表单调节语速、风格标签、音频事件、复合情绪、语音质感和导演模式指令。 |
+| Select Quick Read Voice | 试听并保存 Quick Read 使用的音色。 |
+| Stop Reading | 停止当前播放。 |
 
-### Quick Read
+## 实现说明
 
-1. 在任意 macOS 应用中选中文字。
-2. 打开 Raycast，运行 **Quick Read Selected Text**。
-3. 再次触发该命令即可停止播放。
+- 接口：`POST {Token Plan Base URL}/chat/completions`。
+- 插件使用小米 MiMo Token Plan 凭据：`tp-...` API Key 加 Token Plan OpenAI-compatible Base URL。
+- 待合成文本按官方要求放入 `assistant` message。
+- 风格提示词放入可选的 `user` message。
+- **Read with Controls** 会把整体风格标签写成 `(标签1 标签2)`，把音频事件写成 `（标签1，标签2）`，并放到每个合成片段开头。
+- 自然语言预设和导演模式会放入 `user` message；选中的音频标签会放入 `assistant` 文本。
+- 如果选择 `唱歌`，插件会强制只使用 `(唱歌)` 作为开头标签，确保它位于文本最开头。
+- 插件请求 WAV 音频，播放返回的 base64 音频数据。
+- 停止播放使用共享 PID 文件：`$TMPDIR/mimo-tts.pid`。
 
-### 选择 Quick Read 默认音色
+## 参考
 
-1. 运行 **Select Quick Read Voice**。
-2. 搜索或浏览当前模型支持的音色。
-3. 按回车设为 Quick Read 音色。
-4. 使用 **Preview Voice** 可以用当前选区或剪贴板文本试听。
-
-### 指定音色朗读
-
-1. 选中文字。
-2. 运行 **Read with Voice Selection**。
-3. 选择音色并按回车朗读。
-
-## 技术细节
-
-- **API**：火山引擎豆包 TTS V3 WebSocket 双向流式接口
-- **鉴权**：`X-Api-Key` 或旧版 `X-Api-App-Id` + `X-Api-Access-Key`，并附带 `X-Api-Resource-Id` 和每次连接唯一的 `X-Api-Connect-Id`
-- **响应**：V3 WebSocket 二进制帧，音频 payload 为流式 MP3 数据
-- **音频**：MP3，24000 Hz
-- **分片**：按标点智能拆分，每片不超过 4096 UTF-8 字节
-- **播放**：macOS 内置 `afplay`
-- **停止控制**：共享 PID 文件 `$TMPDIR/doubao-tts.pid`
-
-## 相关文档
-
-- [Raycast 扩展文档](https://developers.raycast.com/)
-- [豆包语音合成大模型 V3 WebSocket 双向流式](https://www.volcengine.com/docs/6561/1329505)
-- [豆包大模型音色列表](https://www.volcengine.com/docs/6561/1257544)
-- [火山引擎控制台 FAQ](https://www.volcengine.com/docs/6561/196768)
-
-## 许可证
-
-[MIT](LICENSE)
+- [Speech synthesis (MiMo-V2.5-TTS Series)](https://platform.xiaomimimo.com/static/docs/usage-guide/speech-synthesis-v2.5.md)
+- [Token Plan Quick Access](https://platform.xiaomimimo.com/static/docs/tokenplan/quick-access.md)

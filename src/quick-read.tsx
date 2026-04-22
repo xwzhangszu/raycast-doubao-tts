@@ -1,5 +1,5 @@
 import { getSelectedText, showHUD, showToast, Toast, openExtensionPreferences } from "@raycast/api";
-import { TTSApiError } from "./api/volcengine-tts";
+import { TTSApiError } from "./api/mimo-tts";
 import { chunkText } from "./utils/text-chunker";
 import { AudioPlayer, stopExternalPlayback } from "./utils/audio-player";
 import { buildDefaultOptionsFromPrefs } from "./utils/voice-preferences";
@@ -26,16 +26,16 @@ export default async function QuickRead() {
     const options = await buildDefaultOptionsFromPrefs();
     const chunks = chunkText(selectedText);
 
-    await showHUD(`🎙️ Reading ${selectedText.length} chars (${chunks.length} chunks)...`);
+    await showHUD(`Reading ${selectedText.length} chars (${chunks.length} chunks)...`);
 
     await playChunksWithLookahead(chunks, options, player);
 
     if (!player.isStopped()) {
-      await showHUD("✓ Playback complete");
+      await showHUD("Playback complete");
     }
   } catch (error) {
     if (error instanceof TTSApiError) {
-      if (error.code === -1) {
+      if (error.code === -1 || error.code === 401 || error.code === 403) {
         await showToast({
           style: Toast.Style.Failure,
           title: "Configuration Required",
@@ -44,7 +44,7 @@ export default async function QuickRead() {
         });
         return;
       }
-      await showHUD(`TTS error: ${error.message}`);
+      await showHUD(`MiMo TTS error: ${error.message}`);
       return;
     }
 
